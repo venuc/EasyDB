@@ -23,5 +23,4 @@ This is a work in progress so please feel free to point out bugs and suggest imp
 Supported databases: Oracle, MySQL.
 
 TO DO:
-1. MS SQL Server not yet supported
-2. Can't call stored procedures
+1. Can't call stored procedures
