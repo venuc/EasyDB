@@ -11,11 +11,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.easydb.abstractions.compositions.JavaSqlComponents;
 import org.easydb.abstractions.entity.Entity;
 import org.easydb.abstractions.queryhandler.InterfaceRawQueryHandler;
 import org.easydb.concrete.connectionhelper.DBHandle;
 import org.easydb.exception.EntityMappingException;
 import org.easydb.utils.Mapping;
+
+
 
 public class RawQueryHandler implements InterfaceRawQueryHandler {
 
@@ -66,7 +69,7 @@ public class RawQueryHandler implements InterfaceRawQueryHandler {
 					/*
 					 * 1. Create an instance of entity 
 					 * 2. Get fields of the generated instance (should be same 
-					 *    as the entity that was passed to executeStatement())
+					 *    as the entity that was passed to executeStatement()
 					 * 		1. Search for the proper field 
 					 * 		2. Write data to the fields of that instance
 					 */
@@ -119,6 +122,29 @@ public class RawQueryHandler implements InterfaceRawQueryHandler {
 			}
 		}
 		return entityList;
+	}
+	
+	// This method returns the result set and statement directly
+	// The caller MUST call close() on these objects
+	public synchronized JavaSqlComponents executeSelectRS(String statement) {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		JavaSqlComponents sqlComponents = new JavaSqlComponents();
+
+		Connection con = dbHandle.getConnection();
+		try {
+
+			stmt = con.prepareStatement(statement);
+			sqlComponents.setPreparedStatement(stmt);
+			
+			rs = stmt.executeQuery();
+			sqlComponents.setResultSet(rs);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+		
+		return sqlComponents;
 	}
 
 	public synchronized int executeUpdate(String statement) {
@@ -177,6 +203,55 @@ public class RawQueryHandler implements InterfaceRawQueryHandler {
 			}
 			
 			b.printStackTrace();
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			try {
+				con.setAutoCommit(dbCommitMode);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (stmt != null) {
+					try {
+						stmt.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return batchCounts;
+	}
+	
+	// This will commit even if we have a BatchUpdateException
+	public synchronized int[] batchUpdateForce(ArrayList<String> statements) {
+		Statement stmt = null;
+		Connection con = dbHandle.getConnection();
+		boolean dbCommitMode = true;
+		int[] batchCounts = { 0 };
+
+		try {
+			dbCommitMode = con.getAutoCommit();
+			con.setAutoCommit(false);
+			
+			stmt = con.createStatement();
+			
+			for (String statement : statements) {
+				stmt.addBatch(statement);
+			}
+			
+			batchCounts = stmt.executeBatch();
+			
+			con.commit();
+		} catch (BatchUpdateException b) {
+			try {
+				con.commit();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			//b.printStackTrace();
 			
 		} catch (SQLException ex) {
 			ex.printStackTrace();

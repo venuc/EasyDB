@@ -29,4 +29,8 @@ public interface InterfaceDBDetails {
 	void setConnectionName(String connectionName);
 
 	String getConnectionName();
+	
+	boolean getWindowsIntegratedAuth();
+
+	void setWindowsIntegratedAuth(boolean windowsIntegratedAuth);
 }

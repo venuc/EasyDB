@@ -2,8 +2,11 @@ package org.easydb.abstractions.queryhandler;
 
 import java.util.ArrayList;
 
+import org.easydb.abstractions.compositions.JavaSqlComponents;
 import org.easydb.abstractions.entity.Entity;
 import org.easydb.exception.EntityMappingException;
+
+
 
 public interface InterfaceRawQueryHandler {
 	
@@ -17,4 +20,8 @@ public interface InterfaceRawQueryHandler {
 	int[] batchUpdate(ArrayList<String> statements);
 	
 	void setAutoCommit(boolean ac);
+
+	int[] batchUpdateForce(ArrayList<String> batchStatements);
+
+	JavaSqlComponents executeSelectRS(String string);
 }

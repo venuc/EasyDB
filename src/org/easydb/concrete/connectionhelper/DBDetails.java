@@ -4,6 +4,7 @@ import org.easydb.abstractions.connectionhelper.InterfaceDBDetails;
 import org.easydb.constants.Vendors;
 import org.easydb.exception.UnknownVendorException;
 
+
 public class DBDetails implements InterfaceDBDetails {
 
 	String userName;
@@ -13,6 +14,15 @@ public class DBDetails implements InterfaceDBDetails {
 	String service;
 	String vendor;
 	String connectionName;
+	boolean windowsIntegratedAuth = false;
+
+	public boolean getWindowsIntegratedAuth() {
+		return windowsIntegratedAuth;
+	}
+
+	public void setWindowsIntegratedAuth(boolean windowsIntegratedAuth) {
+		this.windowsIntegratedAuth = windowsIntegratedAuth;
+	}
 
 	public void setUserName(String userName) {
 		this.userName = userName;

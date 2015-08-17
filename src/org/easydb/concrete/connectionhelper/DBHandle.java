@@ -9,6 +9,8 @@ import org.easydb.constants.Seperators;
 import org.easydb.constants.Vendors;
 import org.easydb.exception.UnknownVendorException;
 
+
+
 public class DBHandle implements InterfaceDBHandle {
 
 	private Connection connection;
@@ -18,6 +20,7 @@ public class DBHandle implements InterfaceDBHandle {
 	// build a handle and register it with DBHandleRegister
 	public DBHandle(InterfaceDBDetails dbDetails) {
 		this.dbDetails = dbDetails;
+		
 		try {
 			if (Vendors.MYSQL.equalsIgnoreCase(dbDetails.getVendor())) {
 				Class.forName("com.mysql.jdbc.Driver");
@@ -40,15 +43,36 @@ public class DBHandle implements InterfaceDBHandle {
 						.append(Seperators.FSLASH)
 						.append(this.dbDetails.getService());
 		
+			} else if (Vendors.MSSQL.equalsIgnoreCase(this.dbDetails.getVendor())) {
+				
+				Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+				
+				connectionString = new StringBuilder("jdbc:sqlserver://")
+				.append(this.dbDetails.getServer())
+				//.append(Seperators.COLON)
+				//.append(this.dbDetails.getPort())
+				.append(Seperators.SEMICOLON)
+				.append("databaseName=")
+				.append(this.dbDetails.getService());
+				
+				if (this.dbDetails.getWindowsIntegratedAuth()) {
+					connectionString.append(";integratedSecurity=true");
+				}
+				
 				// Handle other vendors here
 			} else {
 				throw new UnknownVendorException();
 			}
 			
-			connection = DriverManager.getConnection(
-					connectionString.toString(),
-					this.dbDetails.getUserName(),
-					this.dbDetails.getPassword());
+			if (this.dbDetails.getWindowsIntegratedAuth()) {
+				connection = DriverManager.getConnection(
+						connectionString.toString());
+			} else {
+				connection = DriverManager.getConnection(
+						connectionString.toString(),
+						this.dbDetails.getUserName(),
+						this.dbDetails.getPassword());
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();

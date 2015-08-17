@@ -10,18 +10,20 @@ import org.easydb.concrete.queryhandler.RawQueryHandler;
 import org.easydb.constants.Vendors;
 import org.easydb.exception.EntityMappingException;
 
+
+
 public class Client {
 	public static void main(String[] args) throws EntityMappingException {
 		// ********************* CONFIG *******************//
 		Entity entity = new ClEntity();
 		// Declare DB details
 		DBDetails dbDetails = new DBDetails();
-		dbDetails.setServer("localhost");
-		dbDetails.setPort("3306");
-		dbDetails.setService("mysql");
-		dbDetails.setUserName("root");
-		dbDetails.setPassword("");
-		dbDetails.setVendor(Vendors.MYSQL);
+		dbDetails.setServer("35.54.118.44\\SSCE_MAIN1_TEST2");
+		dbDetails.setPort("1433");
+		dbDetails.setService("Staging - Complaints");
+		dbDetails.setUserName("RBB_CALC_ENDUSER");
+		dbDetails.setPassword("Endu3er123");
+		dbDetails.setVendor(Vendors.MSSQL);
 		dbDetails.setConnectionName("mysql_conn");
 
 		System.out.println("Open DB handles: "
@@ -37,42 +39,41 @@ public class Client {
 		// ********************* FETCH **********************//
 		//Fetch the results into a list of entities
 		ArrayList<Entity> results = rawQueryHandler.executeSelect(
-				"select user, host, password from mysql.user", entity);
+				"select fol_name as ABC, mapped_to from folders", entity);
 		
 		// ******************** INSERT **********************//
 		//int insert = rawQueryHandler.executeInsert("insert into v_test (empid, name)"
-		//		+ " values (1, 'fname')");
-		
-		// ******************** UPDATE **********************//
-		// rawQueryHandler.executeUpdate();
+		//		+ " values (1, 'venu')");
 		
 		// ************** BATCH INSERT / UPDATE *******************//
-		// Any statement which doesn't return a resultset can go in a batch
-/*		
+		
 		int counter = 0;
 		ArrayList<String> batchStatements = new ArrayList<String>();
-		while (counter <= 900) {
-
+/*
+		while (counter <= 9) {
+			if (counter == 800) {
 				batchStatements.add(new StringBuilder("insert into v_test (empid, name)")
-					.append(" values (").append(counter).append(", 'fname lname')").toString());
+				.append(" values (").append("800").append(", 'venuchv@gmail.com')").toString());
+			} else {
+				batchStatements.add(new StringBuilder("insert into v_test (empid, name)")
+					.append(" values (").append(counter).append(", 'venuchv@gmail.com')").toString());
 			}
 			counter++;
 			
 		}
-
-		batchStatements.add(new StringBuilder("update mysql.v_test set name = 'fname' where name='abc'").toString());
-		batchStatements.add(new StringBuilder("update mysql.v_test set name = 'fname' where empid=2").toString());
-		batchStatements.add(new StringBuilder("update mysql.v_test set name = 'cha' where empid=3").toString());
+*/
+		batchStatements.add(new StringBuilder("insert into folders (fol_name) values ('fol4')").toString());
+		batchStatements.add(new StringBuilder("insert into folders (fol_name) values ('fol10')").toString());
+		batchStatements.add(new StringBuilder("insert into folders (fol_name) values ('fol6')").toString());
 		
-		int[] batchResults = rawQueryHandler.batchUpdate(batchStatements);
-*/		
+		int[] batchResults = rawQueryHandler.batchUpdateForce(batchStatements);
+	
 		// ******************** DISPLAY *********************//
 
 		for (Entity r : results) {
 			ClEntity cle = (ClEntity) r;
-			System.out.println("User: " + cle.getUser());
-			System.out.println("Host: " + cle.getHost());
-			System.out.println("passwd: " + cle.getPassword());
+			System.out.println("folder: " + cle.getFolName());
+			System.out.println("mapped to: " + cle.getMappedTo());
 		}
 
 /*

@@ -6,4 +6,5 @@ public class Seperators {
 	public static char BSLASH = '\\';
 	public static char COMMA = ',';
 	public static char DOT = '.';
+	public static char SEMICOLON = ';';
 }

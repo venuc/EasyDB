@@ -7,6 +7,7 @@ import org.easydb.exception.DestroyFailedException;
 import org.easydb.exception.DuplicateDBHandleException;
 import org.easydb.exception.InvalidHandleNameException;
 
+
 public class DBHandleRegister {
 
 	private static HashMap<String, DBHandle> register = new HashMap<String, DBHandle>();

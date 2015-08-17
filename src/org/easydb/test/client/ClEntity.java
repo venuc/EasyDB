@@ -4,41 +4,32 @@ import java.util.HashMap;
 
 import org.easydb.abstractions.entity.Entity;
 
+
 public class ClEntity implements Entity {
 
-	private String host;
-	private String userName;
-	private String password;
+	private String folName;
+	private String mappedTo;
 
 	public HashMap<String, String> mapping() {
 		HashMap<String, String> mapping = new HashMap<String, String>();
-		mapping.put("USER", "userName");
-		mapping.put("PASSWORD", "password");
-		mapping.put("HOST", "host");
+		mapping.put("abc", "folName");
+		mapping.put("MAPPED_TO", "mappedTo");
 		return mapping;
 	}
 
-	public String getUser() {
-		return userName;
+	public String getFolName() {
+		return folName;
 	}
 
-	public void setUser(String user) {
-		this.userName = user;
+	public void setFolName(String folName) {
+		this.folName = folName;
 	}
 
-	public String getHost() {
-		return host;
+	public String getMappedTo() {
+		return mappedTo;
 	}
 
-	public void setHost(String host) {
-		this.host = host;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
+	public void setMappedTo(String mappedTo) {
+		this.mappedTo = mappedTo;
 	}
 }
